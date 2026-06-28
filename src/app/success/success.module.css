@@ -1,0 +1,151 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Download Card */
+.downloadCard {
+  background: var(--color-surface);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.08);
+}
+
+.downloadIcon {
+  font-size: 3.5rem;
+  margin-bottom: var(--space-2);
+}
+
+.downloadTitle {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: var(--space-2);
+}
+
+.downloadSubtitle {
+  color: var(--color-text-secondary);
+  max-width: 420px;
+  margin: 0 auto var(--space-4) auto;
+  line-height: 1.6;
+}
+
+.downloadBtn {
+  display: inline-block;
+  font-size: 1.1rem;
+  padding: var(--space-2) var(--space-5);
+}
+
+.downloadNote {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  margin-top: var(--space-3);
+}
+
+/* Review Form Card */
+.reviewFormCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.reviewFormTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: var(--space-1);
+}
+
+.reviewFormSubtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+  font-size: 0.95rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.input,
+.textarea {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color var(--transition-fast);
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+}
+
+/* Star Rating */
+.stars {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.star {
+  font-size: 2.5rem;
+  color: var(--color-border);
+  cursor: pointer;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  user-select: none;
+  line-height: 1;
+}
+
+.star:hover,
+.starActive {
+  color: #fbbf24;
+  transform: scale(1.15);
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+/* Submitted success state */
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.successMessage span {
+  font-size: 3rem;
+}
+
+.successMessage p {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+}
