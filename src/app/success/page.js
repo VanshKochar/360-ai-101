@@ -1,41 +1,28 @@
-import { redirect } from "next/navigation";
-import crypto from "crypto";
 import ThemeToggle from "../../components/ThemeToggle";
 import ReviewForm from "./ReviewForm";
+import crypto from "crypto";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Payment Successful | 360 AI 101",
   description: "Your purchase is confirmed. Download your 360 AI 101 course guide and start mastering AI today.",
 };
 
-// Runs entirely on the server — the secret never touches the browser.
-function isValidToken(payment_id, amount, token) {
-  if (!payment_id || !amount || !token) return false;
+export default async function SuccessPage({ searchParams }) {
+  const { amount, payment_id, token } = await searchParams;
+  const safeAmount = amount === "99" ? "99" : "51";
 
-  const expected = crypto
+  // Validate the secure token
+  if (!payment_id || !token) {
+    redirect("/");
+  }
+
+  const expectedToken = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-    .update(`${payment_id}|${amount}`)
+    .update(payment_id.toString())
     .digest("hex");
 
-  // Constant-time comparison to prevent timing attacks
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(expected, "hex"),
-      Buffer.from(token, "hex")
-    );
-  } catch {
-    return false; // token was wrong length / not valid hex
-  }
-}
-
-export default async function SuccessPage({ searchParams }) {
-  const { payment_id, amount, token } = await searchParams;
-
-  // Only allow ₹51 or ₹99 — reject any other value
-  const safeAmount = amount === "99" ? "99" : amount === "51" ? "51" : null;
-
-  // Server-side gate: invalid token or amount → kick back to home page
-  if (!safeAmount || !isValidToken(payment_id, safeAmount, token)) {
+  if (token !== expectedToken) {
     redirect("/");
   }
 

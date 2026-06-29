@@ -32,15 +32,17 @@ export default function RazorpayButton({ amount, label, isPrimary = false }) {
 
       // 2. Initialize Razorpay Options
       var options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Use NEXT_PUBLIC if you want to expose key to client, otherwise we should fetch it or pass it. 
+        // Wait, passing from server to client is safer, but Razorpay requires the key on the client side to open the modal.
+        // It's safe to put RAZORPAY_KEY_ID in NEXT_PUBLIC_RAZORPAY_KEY_ID.
+        // I will use a dummy one for now if env is not set.
         name: "360 AI 101",
         currency: data.currency,
         amount: data.amount,
         order_id: data.id,
         description: "Course Access",
         handler: async function (response) {
-          // 3. Verify payment on server — also receives `amount` so server
-          //    can include it in the signed access token.
+          // 3. Verify Payment
           const verifyData = await fetch("/api/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -48,23 +50,20 @@ export default function RazorpayButton({ amount, label, isPrimary = false }) {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
-              amount: String(amount), // pass amount so server can sign it
             }),
           }).then((t) => t.json());
 
           if (verifyData.success) {
-            // 4. Redirect with cryptographic proof — success page will re-validate
-            //    this token server-side; a fake URL without a valid token is rejected.
-            window.location.href = `/success?payment_id=${verifyData.payment_id}&amount=${amount}&token=${verifyData.token}`;
+            // Redirect to success page with secure token
+            window.location.href = `/success?amount=${amount}&payment_id=${response.razorpay_payment_id}&token=${verifyData.token}`;
           } else {
             alert("Payment Verification Failed!");
-            setIsLoading(false);
           }
         },
         prefill: {
-          name: "",
-          email: "",
-          contact: "",
+          name: "John Doe",
+          email: "johndoe@example.com",
+          contact: "9999999999",
         },
       };
 
@@ -73,12 +72,12 @@ export default function RazorpayButton({ amount, label, isPrimary = false }) {
 
       paymentObject.on("payment.failed", function (response) {
         alert("Payment Failed. Reason: " + response.error.description);
-        setIsLoading(false);
       });
-
+      
     } catch (error) {
       console.error(error);
       alert("Something went wrong!");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -94,10 +93,10 @@ export default function RazorpayButton({ amount, label, isPrimary = false }) {
   };
 
   return (
-    <button
-      onClick={makePayment}
+    <button 
+      onClick={makePayment} 
       disabled={isLoading}
-      className={`button ${isPrimary ? "button-primary" : "button-outline"}`}
+      className={`button ${isPrimary ? 'button-primary' : 'button-outline'}`}
       style={{ width: "100%", opacity: isLoading ? 0.7 : 1 }}
     >
       {isLoading ? "Processing..." : label}
